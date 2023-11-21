@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from undetected_chromedriver import Chrome, ChromeOptions
 from constants import SCRAPER_TIMEOUT, SCRAPER_SLEEP
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -17,7 +18,13 @@ def scrape_team_ova(from_year, to_year, csv_path):
         os.makedirs(csv_path)
 
     # Start scraping.
-    browser = webdriver.Chrome(ChromeDriverManager().install())
+    options = ChromeOptions()
+
+# Cấu hình options
+# options.add_argument("--option_name")
+
+# Khởi tạo Chrome driver
+    browser = Chrome(options=options)
     browser.get("https://sofifa.com/teams?type=all&lg%5B%5D=13&lg%5B%5D=14")
 
     try:
@@ -27,25 +34,28 @@ def scrape_team_ova(from_year, to_year, csv_path):
         browser.quit()
 
     # Clicks
-    for year in range(from_year, to_year + 1):
+    for year in range(from_year, to_year):
         try:
             filePath = "{}/{}-{}.csv".format(csv_path, year, year + 1)
             if os.path.exists(filePath) and year < to_year - 1:
                 # Skip if file already exists and does not need to be updated
                 continue
             fifa_version = str(format((year % 2000 + 1), '02d'))
-
-            show_list_button = browser.find_element_by_xpath("//a[contains(@class, 'bp3-button bp3-minimal text dropdown-toggle')]")
+            print(fifa_version)
+            show_list_button = browser.find_element("xpath","//a[contains(@class, 'bp3-button bp3-minimal text dropdown-toggle')]")
             show_list_button.click()
             time.sleep(SCRAPER_SLEEP)
-
-            fifa_year_button = browser.find_element_by_xpath("//a[contains(text(), 'FIFA " + fifa_version + "')]")
+            print('1')
+            xpath_year = "//a[contains(text(), 'FIFA {0}')]".format(fifa_version)
+            fifa_year_button = browser.find_element("xpath",xpath_year)
             fifa_year_button.click()
+            print('2')
             time.sleep(SCRAPER_SLEEP)
 
             # Collect the data we need
-            name_elements = browser.find_elements_by_xpath("//tbody/tr/td[2]/a/div")
-            ova_elements = browser.find_elements_by_xpath("//tbody/tr/td[3]/span")
+            name_elements = browser.find_elements("xpath", "//tbody/tr/td[2]/a/div")
+            ova_elements = browser.find_elements("xpath", "//tbody/tr/td[3]/span")
+
             titles = [x.text for x in name_elements[::2]]
             ovas = [x.text for x in ova_elements]
 
@@ -69,6 +79,7 @@ def scrape_team_ova(from_year, to_year, csv_path):
 def convert_team_name(name):
     name_change_map = {
         'Birmingham': 'Birmingham City',
+        'Arsenal': 'Arsenal FC',
         'Blackburn': 'Blackburn Rovers',
         'Bolton': 'Bolton Wanderers',
         'Brighton': 'Brighton & Hove Albion',
@@ -126,9 +137,9 @@ def merge_ova_to_cleaned_all(ova_folder_path, cleaned_folder_path, from_year, to
             ova_path = os.path.join(ova_folder_path, '{}-{}.csv'.format(year - 1, year))
         cleaned_path = os.path.join(cleaned_folder_path, '{}-{}.csv'.format(year, year + 1))
 
-        print("About to merge " + ova_path + " ...")
+        print("About to merge " + ova_path + " ...")     
         merge_ova_to_cleaned(ova_path, cleaned_path)
 
 
 if __name__ == "__main__":
-    scrape_team_ova_all("data/OVAs", 2006, 2019)
+    scrape_team_ova_all("data/OVAs", 2006, 2023)

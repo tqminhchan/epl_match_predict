@@ -58,7 +58,7 @@ def get_fixtures(rawDataPath, yearFrom, yearTo):
 
 def get_current_fixtures(rawDataCurrentPath):
     base_url = "http://api.football-data.org/v2/competitions/"
-    AUTH_TOKEN = "9f2efd00a5604f59a8f1c54860786e31"
+    AUTH_TOKEN = "83a9bf5840dc446abc38b25c17fb5580"
     headers={"X-Auth-Token": AUTH_TOKEN}
 
     print("Getting results and fixtures for this year...")
@@ -86,4 +86,4 @@ def get_current_fixtures(rawDataCurrentPath):
 
 
 if __name__ == "__main__":
-    get_current_fixtures("data/raw/2019-2020.csv")
+    get_current_fixtures("data/raw/2023-2024.csv")
