@@ -30,7 +30,6 @@ Bước 3: Tải các thư viện cần dùng trong file requirements.txt theo c
 	Bước 2: chạy lần lượt các file dưới đây: trong terminal với cú pháp "python + tên file"
 
 --------------------------------------các file để chạy-----------------------------------------------------------
-
 Scripts
 1. clean_data.py
 Bao gồm các hàm trợ giúp cần thiết để xử lý dữ liệu gốc
@@ -50,7 +49,7 @@ Tệp I/O trong đó các chức năng từ các tệp trên thực sự đượ
 
 8. app.py
 file này hiển thị giao diện giúp người dùng tương tác với chương trình
- 
+-----------------------------------------------------------------------------------------------------------------
 
 Data
 1. data/raw/OVAs (thư mục)
